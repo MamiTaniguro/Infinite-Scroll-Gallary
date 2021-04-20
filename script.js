@@ -1,72 +1,61 @@
-const quoteContainer = document.getElementById('quote-container');
-const quoteText = document.getElementById('quote');
-const authorText = document.getElementById('author');
-const twitterBtn = document.getElementById('twitter');
-const newQuoteBtn = document.getElementById('new-quote');
-const loader = document.getElementById('loader');
+const imageContainer = document.getElementById('image-container')
+const loader =  document.getElementById('loader')
 
-let apiQuotes = [];
+let photosArray = [];
 
-function showLoadingSpinner() {
-  loader.hidden = false;
-  quoteContainer.hidden = true;
-}
+// Unsplash API
+const count = 30;
+const apiKey = 'Rtl92VWJu9s-VgiZPSJVtN_C2q5EVtcPC9TKbsz1GRc';
+const apiUrl = `https://api.unsplash.com/photos/random/?client_id=${apiKey}&count=${count}`;
 
-function removeLoadingSpinner() {
-  quoteContainer.hidden = false;
-  loader.hidden = true;
-}
-
-// show new quote
-function newQuote() {
-  showLoadingSpinner();
-
-  // pick a random quote from array
-  const quote = apiQuotes[Math.floor(Math.random() * apiQuotes.length)];
-
-  // check if author field is blank
-  // if author field is blank, replace it with 'Unknown'
-  if (!quote.author) {
-    authorText.textContent = 'Unknown';
-  } else {
-    authorText.textContent = quote.author;
+// Helper fuction to set attributes on DOM elements
+function setAttributes(element, attributes) {
+  for (const key in attributes) {
+    element.setAttribute(key, attributes[key]);
   }
-
-  // check quote length to determine styling
-  if (quote.text.length > 120) {
-    quoteText.classList.add('long-quote');
-  } else {
-    quoteText.classList.remove('long-quote');
-  }
-
-  // set quote, hide loadering spinner
-  quoteText.textContent = quote.text;
-  removeLoadingSpinner();
 }
 
-// get quotes from API
-async function getQuotes() {
-  showLoadingSpinner();
-  const apiUrl = 'https://type.fit/api/quotes';
-  
+// Create elements for links and photos
+function displayPhotos() {
+  // Run function for each object in photosArray
+  photosArray.forEach((photo) => {
+    // Create <a> to link to Unsplash
+    const item = document.createElement('a');
+    setAttributes(item, {
+      href: photo.links.html,
+      target: '_blank',
+    });
+    // Create <img> for photo
+    const img = document.createElement('img');
+    setAttributes(img, {
+      src: photo.urls.regular,
+      alt: photo.alt_description,
+      title: photo.alt_description,
+    });
+    // Put <img> inside <a>, then put both inside imageContainer element
+    item.appendChild(img);
+    imageContainer.appendChild(item);
+  });
+}
+
+// Get photos from Unsplash API
+async function getPhotos() {
   try {
     const response = await fetch(apiUrl);
-    apiQuotes = await response.json();
-    newQuote();
+    photosArray = await response.json();
+    displayPhotos();
   } catch (error) {
-    // catch error here
+    // Catch Error Here
   }
 }
 
-// Tweet quote
-function tweetQuote() {
-  const twitterUrl = `https://twitter.com/intent/tweet?text=${quoteText.innerText} - ${authorText.innerText}`;
-  window.open(twitterUrl, '_blank');
-}
+// Check to see if scrolling near bottom of page, Load More Photos
+window.addEventListener('scroll', () => {
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000) {
+    getPhotos();
+    console.log('load more');
+  }
+});
 
-// Event listeners
-newQuoteBtn.addEventListener('click', newQuote);
-twitterBtn.addEventListener('click', tweetQuote);
-
-// On load
-getQuotes();
+// On Load
+getPhotos();

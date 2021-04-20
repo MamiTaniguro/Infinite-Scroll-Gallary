@@ -2,30 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Quote Generator</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinite Scroll</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="duckIcon.png">
 </head>
 <body>
-    <div class = "quote-container" id="quote-container">
-        <!-- Quote -->
-        <div class="quote-text">
-            <span id="quote"></span>
-        </div>
-        <!-- Author -->
-            <div class="quote-author">
-                <span id="author"></span>
-            </div>
-        <!-- Buttons -->
-        <div class="button-container">
-            <button class="twitter-button" id="twitter" title="Tweet This!">
-            <i class="fab fa-twitter"></i>
-            </button>
-            <button id="new-quote">New Quote</button>
-        </div>
-    </div>
+    <!-- Title -->
+    <h1>Discover beautiful UNSPLASH photos</h1>
+    <h2>- Click a picture to download -</h2>
     <!-- Loader -->
-    <div class="loader" id="loader"></div>
+    <div class="loader" id="loader" hidden>
+        <img src="loader.svg" alt="Loading">
+    </div>
+    <!-- Image Container -->
+    <div class="image-container" id="image-container"></div>
     <!-- Script  -->
     <script src="script.js"></script>
 </body>
